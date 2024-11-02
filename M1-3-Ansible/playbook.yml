@@ -1,6 +1,9 @@
 - hosts: localhost
   gather_facts: no
 
+  vars_files:
+    - secrets.yml
+
   vars:
     work_dir: '~/windows/devops-programme'
     image_name: 'teodor55/flaskapp'
@@ -16,6 +19,11 @@
         name: '{{ image_name }}'
         tag: '{{ image_tag }}'
         source: build
+    
+    - name: Log into DockerHub
+      docker_login:
+        username: '{{ docker.user }}'
+        password: '{{ docker.pass }}'
     
     - name: Push Docker Image
       docker_image:
