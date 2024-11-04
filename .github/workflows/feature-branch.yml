@@ -21,3 +21,13 @@ jobs:
     needs: Explore-GitHub-Actions
     steps:
       - run: echo "Hurray this is a 2nd job, it needs the 'Explore-GitHub-Actions' job."
+
+  job-with-secret:
+    runs-on: ubuntu-latest
+    needs: second-job
+    steps:
+      - name: Retrieve secret
+        env:
+          my_secret: ${{ secrets.MY_SECRET }}
+        run: |
+          echo "this is the secret: $my_secret"
