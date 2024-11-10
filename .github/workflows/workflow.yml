@@ -1,7 +1,13 @@
 name: Unit Test
 run-name: Action triggered by @${{ github.actor }}
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    paths:
+      - 'app/**'
     
 jobs:
     build:
