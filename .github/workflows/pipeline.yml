@@ -22,6 +22,28 @@ jobs:
       - name: Run the editorconfig checker
         run: editorconfig-checker -verbose -exclude node_modules
 
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: pip install pylint black
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          pylint: true
+          pylint_args: --disable=C0114,C0115,C0116,E0401
+          black: true
+
   unit-tests:
     runs-on: ubuntu-latest
     steps:
