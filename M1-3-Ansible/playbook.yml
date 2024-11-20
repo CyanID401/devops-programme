@@ -1,0 +1,42 @@
+- hosts: localhost
+  gather_facts: no
+
+  vars_files:
+    - secrets.yml
+
+  vars:
+    work_dir: '~/windows/devops-programme'
+    image_name: 'teodor55/flaskapp'
+    image_tag: 'v1.3'
+    listen_port: '3000'
+    container_name: 'flaskapp'
+
+  tasks:
+    - name: Build Docker Image
+      docker_image:
+        build:
+          path: '{{ work_dir }}'
+        name: '{{ image_name }}'
+        tag: '{{ image_tag }}'
+        source: build
+    
+    - name: Log into DockerHub
+      docker_login:
+        username: '{{ docker.user }}'
+        password: '{{ docker.pass }}'
+    
+    - name: Push Docker Image
+      docker_image:
+        name: '{{ image_name }}'
+        tag: '{{ image_tag }}'
+        push: yes
+        source: local
+
+    - name: Spin-up the Container
+      docker_container:
+        name: '{{ container_name }}'
+        image: '{{ image_name }}:{{ image_tag }}'
+        ports: '5000:{{ listen_port }}'
+        recreate: true
+        env:
+          PORT: '{{ listen_port }}'
